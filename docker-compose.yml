@@ -1,0 +1,29 @@
+version: "3.9"
+services:
+  online_test_database:
+    container_name: mysql_database
+    image: mysql:8.0.28-oracle
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: sunflower@102
+      MYSQL_DATABASE: online_test_database
+    volumes:
+      - /mysql_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+  online_test_server:
+    container_name: wildfly_server
+    build:
+      context: ./
+      dockerfile: dockerfile
+    restart: always
+    environment:
+      TZ: Asia/Ho_Chi_Minh
+    ports:
+      - "8080:8080"
+      - "9990:9990"
+    links:
+      - "online_test_database:online_test_database_link"
+    depends_on:
+      - online_test_database
