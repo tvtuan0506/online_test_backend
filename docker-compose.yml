@@ -31,3 +31,12 @@ services:
       - "online_test_database:online_test_database_link"
     depends_on:
       - online_test_database
+  jenkins_server:
+    container_name: jenkins_server
+    image: jenkins/jenkins:lts-jdk11
+    restart: unless-stopped
+#    volumes:
+#      - /jenkins_home:/var/jenkins_home
+    ports:
+      - "8888:8080"
+      - "50000:50000"
