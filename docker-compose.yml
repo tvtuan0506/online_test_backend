@@ -4,10 +4,12 @@ services:
     container_name: mysql_database
     image: mysql:8.0.28-oracle
     command: --default-authentication-plugin=mysql_native_password
-    restart: always
+    restart: unless-stopped
+    env_file:
+      - .env
     environment:
-      MYSQL_ROOT_PASSWORD: sunflower@102
-      MYSQL_DATABASE: online_test_database
+      MYSQL_ROOT_PASSWORD: $DATABASE_PASSWORD
+      MYSQL_DATABASE: $DATABASE_NAME
     volumes:
       - /mysql_data:/var/lib/mysql
     ports:
@@ -17,9 +19,11 @@ services:
     build:
       context: ./
       dockerfile: dockerfile
-    restart: always
+    restart: unless-stopped
+    env_file:
+      - .env
     environment:
-      TZ: Asia/Ho_Chi_Minh
+      TZ: $SERVER_CONTAINER_TIME_ZONE
     ports:
       - "8080:8080"
       - "9990:9990"
