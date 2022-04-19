@@ -11,7 +11,7 @@ services:
       MYSQL_ROOT_PASSWORD: $DATABASE_PASSWORD
       MYSQL_DATABASE: $DATABASE_NAME
     volumes:
-      - /mysql_data:/var/lib/mysql
+      - mysql:/var/lib/mysql
     ports:
       - "3306:3306"
   online_test_server:
@@ -35,8 +35,42 @@ services:
     container_name: jenkins_server
     image: jenkins/jenkins:lts-jdk11
     restart: unless-stopped
-#    volumes:
-#      - /jenkins_home:/var/jenkins_home
+    env_file:
+      - .env
+    environment:
+      TZ: $SERVER_CONTAINER_TIME_ZONE
+    volumes:
+      - jenkins_home:/var/jenkins_home
     ports:
       - "8888:8080"
       - "50000:50000"
+  sonarqube_database:
+    container_name: postgres_database
+    image: postgres:12
+    environment:
+      POSTGRES_USER: sonar
+      POSTGRES_PASSWORD: sonar
+    volumes:
+      - postgresql:/var/lib/postgresql
+  sonarqube_server:
+    container_name: sonarqube_server
+    image: sonarqube:lts-community
+    depends_on:
+      - sonarqube_database
+    environment:
+      SONAR_JDBC_URL: jdbc:postgresql://sonarqube_database:5432/sonar
+      SONAR_JDBC_USERNAME: sonar
+      SONAR_JDBC_PASSWORD: sonar
+    volumes:
+      - sonarqube_data:/opt/sonarqube/data
+      - sonarqube_extensions:/opt/sonarqube/extensions
+      - sonarqube_logs:/opt/sonarqube/logs
+    ports:
+      - "9999:9000"
+volumes:
+  mysql:
+  jenkins_home:
+  postgresql:
+  sonarqube_data:
+  sonarqube_extensions:
+  sonarqube_logs:
