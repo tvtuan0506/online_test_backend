@@ -13,7 +13,6 @@ public class GenericDAO<T extends iEntity> {
     @PersistenceContext(unitName = "online_test_persistence")
     private EntityManager entityManager;
 
-
     private Class<T> getPersistenceClass() {
         if (this.persistenceClass == null) {
             this.persistenceClass = (Class<T>) ((ParameterizedType) this.getClass().getGenericSuperclass())
