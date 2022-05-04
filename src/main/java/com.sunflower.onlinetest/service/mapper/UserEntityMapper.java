@@ -1,10 +1,10 @@
 package com.sunflower.onlinetest.service.mapper;
 
 import com.sunflower.onlinetest.entity.UserEntity;
-import com.sunflower.onlinetest.service.response.LoginSignupResponse;
+import com.sunflower.onlinetest.service.dto.UserDTO;
 import org.mapstruct.Mapper;
 
 @Mapper
 public interface UserEntityMapper {
-    LoginSignupResponse toLoginSignupResponse(UserEntity userEntity);
+    UserDTO toUserResponse(UserEntity userEntity);
 }

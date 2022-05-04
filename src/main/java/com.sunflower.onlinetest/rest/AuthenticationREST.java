@@ -4,6 +4,7 @@ import com.sunflower.onlinetest.entity.UserEntity;
 import com.sunflower.onlinetest.rest.request.LoginRequest;
 import com.sunflower.onlinetest.rest.request.SignupRequest;
 import com.sunflower.onlinetest.service.AuthenticationService;
+import com.sunflower.onlinetest.service.dto.UserDTO;
 import com.sunflower.onlinetest.service.mapper.UserEntityMapper;
 import com.sunflower.onlinetest.service.response.LoginSignupResponse;
 
@@ -38,10 +39,20 @@ public class AuthenticationREST {
     public Response login(LoginRequest loginRequest) {
         try {
             UserEntity userEntity = authenticationService.login(loginRequest.getEmail(), loginRequest.getPassword()).get();
-            LoginSignupResponse loginSignupResponse = userEntityMapper.toLoginSignupResponse(userEntity);
+            UserDTO userResponse = userEntityMapper.toUserResponse(userEntity);
+            LoginSignupResponse loginSignupResponse = LoginSignupResponse.builder()
+                    .status(200)
+                    .message("successfully")
+                    .jwt("jwt is not available")
+                    .userDTO(userResponse)
+                    .build();
             return Response.ok(loginSignupResponse).build();
         } catch (Exception e) {
-            return Response.ok(EMAIL_OR_PASSWORD_IS_INVALID).build();
+            LoginSignupResponse loginSignupResponse = LoginSignupResponse.builder()
+                    .status(400)
+                    .message(EMAIL_OR_PASSWORD_IS_INVALID)
+                    .build();
+            return Response.ok(loginSignupResponse).build();
         }
     }
 
@@ -50,10 +61,19 @@ public class AuthenticationREST {
     public Response signup(SignupRequest signupRequest) {
         try {
             UserEntity userEntity = authenticationService.signup(signupRequest.getFullName(), signupRequest.getEmail(), signupRequest.getPassword()).get();
-            LoginSignupResponse loginSignupResponse = userEntityMapper.toLoginSignupResponse(userEntity);
+            UserDTO userResponse = userEntityMapper.toUserResponse(userEntity);
+            LoginSignupResponse loginSignupResponse = LoginSignupResponse.builder()
+                    .status(200)
+                    .message("successfully")
+                    .jwt("jwt is not available")
+                    .userDTO(userResponse)
+                    .build();
             return Response.ok(loginSignupResponse).build();
         } catch (Exception e) {
-            return Response.ok(COULD_NOT_SIGNUP_PLEASE_TRY_AGAIN).build();
-        }
+            LoginSignupResponse loginSignupResponse = LoginSignupResponse.builder()
+                    .status(400)
+                    .message(COULD_NOT_SIGNUP_PLEASE_TRY_AGAIN)
+                    .build();
+            return Response.ok(loginSignupResponse).build();        }
     }
 }
