@@ -4,18 +4,18 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
 public class SignupRequest {
 
-    @NotBlank
+    @NotNull
     private String fullName;
 
     @Email
     private String email;
 
-    //    @Pattern(regexp = ".*}")
+    @NotNull
     private String password;
 }

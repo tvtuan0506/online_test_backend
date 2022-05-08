@@ -1,12 +1,12 @@
 package com.sunflower.onlinetest.service;
 
 import com.sunflower.onlinetest.entity.UserEntity;
-
-import java.util.Optional;
+import com.sunflower.onlinetest.rest.request.LoginRequest;
+import com.sunflower.onlinetest.rest.request.SignupRequest;
 
 public interface AuthenticationService {
 
-    Optional<UserEntity> login(String email, String password);
+    UserEntity login(LoginRequest loginRequest);
 
-    Optional<UserEntity> signup(String fullName, String email, String password);
+    UserEntity signup(SignupRequest signupRequest);
 }

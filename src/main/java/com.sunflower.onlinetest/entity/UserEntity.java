@@ -35,7 +35,4 @@ public class UserEntity implements iEntity {
     @NotBlank
     @NotNull
     private String password;
-
-//    @ManyToMany
-//    private List<RoleEntity> roles;
 }

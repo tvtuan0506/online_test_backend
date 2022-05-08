@@ -4,9 +4,9 @@ import com.sunflower.onlinetest.entity.UserEntity;
 import com.sunflower.onlinetest.rest.request.LoginRequest;
 import com.sunflower.onlinetest.rest.request.SignupRequest;
 import com.sunflower.onlinetest.service.AuthenticationService;
-import com.sunflower.onlinetest.service.dto.UserDTO;
 import com.sunflower.onlinetest.service.mapper.UserEntityMapper;
-import com.sunflower.onlinetest.service.response.LoginSignupResponse;
+import com.sunflower.onlinetest.service.response.ResponseObject;
+import com.sunflower.onlinetest.service.response.UserDTO;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -25,8 +25,7 @@ import javax.ws.rs.core.Response;
 @Produces(MediaType.APPLICATION_JSON)
 public class AuthenticationREST {
 
-    public static final String EMAIL_OR_PASSWORD_IS_INVALID = "Email or password is invalid!";
-    public static final String COULD_NOT_SIGNUP_PLEASE_TRY_AGAIN = "Could not signup! Please try again!";
+    public static final String SUCCESSFULLY = "successfully";
 
     @Inject
     private AuthenticationService authenticationService;
@@ -38,21 +37,23 @@ public class AuthenticationREST {
     @Path("login")
     public Response login(LoginRequest loginRequest) {
         try {
-            UserEntity userEntity = authenticationService.login(loginRequest.getEmail(), loginRequest.getPassword()).get();
-            UserDTO userResponse = userEntityMapper.toUserResponse(userEntity);
-            LoginSignupResponse loginSignupResponse = LoginSignupResponse.builder()
-                    .status(200)
-                    .message("successfully")
+            UserEntity userEntity = authenticationService.login(loginRequest);
+            UserDTO userDTO = userEntityMapper.toUserResponse(userEntity);
+            ResponseObject responseObject = ResponseObject.builder()
+                    .message(SUCCESSFULLY)
+                    .data(userDTO)
                     .jwt("jwt is not available")
-                    .userDTO(userResponse)
                     .build();
-            return Response.ok(loginSignupResponse).build();
+            return Response.status(Response.Status.OK)
+                    .entity(responseObject)
+                    .build();
         } catch (Exception e) {
-            LoginSignupResponse loginSignupResponse = LoginSignupResponse.builder()
-                    .status(400)
-                    .message(EMAIL_OR_PASSWORD_IS_INVALID)
+            ResponseObject responseObject = ResponseObject.builder()
+                    .message(e.getMessage())
                     .build();
-            return Response.ok(loginSignupResponse).build();
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(responseObject)
+                    .build();
         }
     }
 
@@ -60,20 +61,23 @@ public class AuthenticationREST {
     @Path("signup")
     public Response signup(SignupRequest signupRequest) {
         try {
-            UserEntity userEntity = authenticationService.signup(signupRequest.getFullName(), signupRequest.getEmail(), signupRequest.getPassword()).get();
-            UserDTO userResponse = userEntityMapper.toUserResponse(userEntity);
-            LoginSignupResponse loginSignupResponse = LoginSignupResponse.builder()
-                    .status(200)
-                    .message("successfully")
+            UserEntity userEntity = authenticationService.signup(signupRequest);
+            UserDTO userDTO = userEntityMapper.toUserResponse(userEntity);
+            ResponseObject responseObject = ResponseObject.builder()
+                    .message(SUCCESSFULLY)
+                    .data(userDTO)
                     .jwt("jwt is not available")
-                    .userDTO(userResponse)
                     .build();
-            return Response.ok(loginSignupResponse).build();
+            return Response.status(Response.Status.OK)
+                    .entity(responseObject)
+                    .build();
         } catch (Exception e) {
-            LoginSignupResponse loginSignupResponse = LoginSignupResponse.builder()
-                    .status(400)
-                    .message(COULD_NOT_SIGNUP_PLEASE_TRY_AGAIN)
+            ResponseObject responseObject = ResponseObject.builder()
+                    .message(e.getMessage())
                     .build();
-            return Response.ok(loginSignupResponse).build();        }
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(responseObject)
+                    .build();
+        }
     }
 }
