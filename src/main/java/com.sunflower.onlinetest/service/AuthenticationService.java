@@ -9,6 +9,4 @@ public interface AuthenticationService {
     UserEntity login(LoginRequest loginRequest);
 
     UserEntity signup(SignupRequest signupRequest);
-
-    void checkValidUser(LoginRequest loginRequest);
 }
