@@ -7,7 +7,8 @@ import lombok.Setter;
 @Builder
 @Getter
 @Setter
-public class ResponseObject {
+public class ResponseObjectWithJWT {
     private String message;
     private Object data;
+    private Object jwt;
 }

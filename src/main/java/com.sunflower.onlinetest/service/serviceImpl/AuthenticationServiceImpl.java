@@ -2,6 +2,7 @@ package com.sunflower.onlinetest.service.serviceImpl;
 
 import com.sunflower.onlinetest.dao.UserDAO;
 import com.sunflower.onlinetest.entity.UserEntity;
+import com.sunflower.onlinetest.service.exception.UnauthorizedException;
 import com.sunflower.onlinetest.rest.request.LoginRequest;
 import com.sunflower.onlinetest.rest.request.SignupRequest;
 import com.sunflower.onlinetest.service.AuthenticationService;
@@ -51,6 +52,19 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             return newUser;
         } catch (Exception e) {
             throw new RuntimeException(COULD_NOT_SIGNUP, e);
+        }
+    }
+
+    @Override
+    public void checkValidUser(LoginRequest loginRequest) {
+        Optional<UserEntity> checkingUserEntity = userDAO.findByEmail(loginRequest.getEmail());
+        if (checkingUserEntity.isEmpty()) {
+//            log.error("Username invalid");
+            throw new UnauthorizedException("Email is not correct!");
+        }
+        if (!checkingUserEntity.get().getPassword().equals(loginRequest.getPassword())) {
+//            log.error("Password is not correct");
+            throw new UnauthorizedException("Password is not correct!");
         }
     }
 }
