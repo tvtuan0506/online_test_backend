@@ -25,8 +25,9 @@ public class GenericDAO<T extends iEntity> {
         return this.entityManager.find(getPersistenceClass(), id);
     }
 
-    public void save(T entity) {
+    public T save(T entity) {
         this.entityManager.persist(entity);
+        return entity;
     }
 
     public T update(T entity) {

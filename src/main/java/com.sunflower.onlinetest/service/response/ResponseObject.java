@@ -10,5 +10,4 @@ import lombok.Setter;
 public class ResponseObject {
     private String message;
     private Object data;
-    private String jwt;
 }
